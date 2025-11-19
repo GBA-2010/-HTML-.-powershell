@@ -3,122 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Полное управление защитой</title>
+    <title>Панель управления защитой</title>
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
-            background-color: #e9ecef;
-            color: #333;
-            max-width: 800px;
+            background-color: #f3f4f6;
+            color: #1f2937;
+            max-width: 700px;
             margin: 0 auto;
             padding: 20px;
         }
         .card {
             background: white;
-            padding: 25px;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             margin-bottom: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        .warning-box {
-            background-color: #fff3cd;
-            border: 2px solid #ffeeba;
-            color: #856404;
+        .critical-warning {
+            background-color: #fee2e2;
+            border-left: 6px solid #ef4444;
             padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            color: #991b1b;
         }
-        h2 { margin-top: 0; }
+        h2 { margin-top: 0; font-size: 1.2em; }
+        .step-list { margin: 0; padding-left: 20px; }
+        .step-list li { margin-bottom: 5px; }
         
-        .btn-group {
-            margin-top: 15px;
-        }
-
-        .code-display {
-            background: #212529;
-            color: #f8f9fa;
+        .code-area {
+            background: #111827;
+            color: #10b981; /* Зеленый текст консоли */
             padding: 15px;
             font-family: 'Consolas', monospace;
-            font-size: 0.85em;
-            border-radius: 5px;
+            border-radius: 6px;
+            font-size: 0.9em;
             word-break: break-all;
-            margin-bottom: 10px;
-            border-left: 5px solid #6c757d;
+            margin: 10px 0;
+            border: 1px solid #374151;
         }
 
-        .action-btn {
+        .btn {
             width: 100%;
-            padding: 15px;
-            font-size: 16px;
+            padding: 12px;
             font-weight: bold;
-            color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 6px;
             cursor: pointer;
-            transition: opacity 0.2s;
-            text-transform: uppercase;
+            font-size: 16px;
+            transition: transform 0.1s;
         }
+        .btn:active { transform: scale(0.98); }
         
-        .btn-off {
-            background-color: #dc3545; /* Красный */
-            box-shadow: 0 4px 0 #a71d2a;
-        }
-        .btn-off:active { box-shadow: none; transform: translateY(4px); }
-
-        .btn-on {
-            background-color: #28a745; /* Зеленый */
-            box-shadow: 0 4px 0 #1e7e34;
-        }
-        .btn-on:active { box-shadow: none; transform: translateY(4px); }
+        .btn-off { background-color: #ef4444; color: white; } /* Красная */
+        .btn-on { background-color: #10b981; color: white; }  /* Зеленая */
 
     </style>
 </head>
 <body>
 
-    <div class="warning-box">
-        <h3>⚠️ ВАЖНО: Перед использованием</h3>
-        <p>Чтобы команды ниже сработали для <strong>Защиты в реальном времени</strong>, вы должны вручную отключить <strong>«Защиту от подделки»</strong> в настройках Безопасности Windows. Иначе Windows заблокирует выполнение команды.</p>
+    <div class="critical-warning">
+        <h3>🛑 ПОЧЕМУ КОД МОЖЕТ НЕ РАБОТАТЬ?</h3>
+        <p>Windows блокирует отключение защиты через скрипты.</p>
+        <p><strong>Чтобы кнопки ниже сработали, вы должны:</strong></p>
+        <ol>
+            <li>Открыть настройки антивируса (там же, где Защита в реальном времени).</li>
+            <li>Пролистать вниз до пункта <strong>«Защита от подделки»</strong>.</li>
+            <li><strong>ВЫКЛЮЧИТЬ</strong> его вручную.</li>
+        </ol>
+        <p><em>Без этого шага команды ниже будут игнорироваться системой!</em></p>
     </div>
 
     <div class="card">
-        <h2>⛔ ОТКЛЮЧИТЬ ВСЁ (Брандмауэр + Антивирус + Облако)</h2>
-        <p>Эта кнопка копирует команду, которая отключает:</p>
-        <ul>
-            <li>Все профили брандмауэра</li>
-            <li>Защиту в реальном времени</li>
-            <li>Облачную защиту и отправку образцов</li>
-        </ul>
+        <h2>🔴 ОТКЛЮЧИТЬ ВСЁ</h2>
+        <p>Отключает: Брандмауэр, Реальное время, Облако.</p>
         
-        <div class="code-display" id="cmdOff">Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False; Set-MpPreference -DisableRealtimeMonitoring $true; Set-MpPreference -MAPSReporting 0</div>
+        <div class="code-area" id="cmdDisable">Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False; Set-MpPreference -DisableRealtimeMonitoring $true; Set-MpPreference -MAPSReporting 0</div>
         
-        <button class="action-btn btn-off" onclick="copyText('cmdOff', this)">Скопировать команду ОТКЛЮЧЕНИЯ</button>
+        <button class="btn btn-off" onclick="copyCmd('cmdDisable', this)">1. СКОПИРОВАТЬ КОМАНДУ</button>
+        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+            👉 После копирования: вставьте в черное окно PowerShell и нажмите <strong>Enter</strong>.
+        </p>
     </div>
 
     <div class="card">
-        <h2>✅ ВКЛЮЧИТЬ ВСЁ ОБРАТНО</h2>
-        <p>Восстанавливает все настройки безопасности в исходное состояние.</p>
+        <h2>🟢 ВКЛЮЧИТЬ ВСЁ ОБРАТНО</h2>
+        <p>Возвращает все настройки безопасности.</p>
         
-        <div class="code-display" id="cmdOn">Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled True; Set-MpPreference -DisableRealtimeMonitoring $false; Set-MpPreference -MAPSReporting 2</div>
+        <div class="code-area" id="cmdEnable">Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled True; Set-MpPreference -DisableRealtimeMonitoring $false; Set-MpPreference -MAPSReporting 2</div>
         
-        <button class="action-btn btn-on" onclick="copyText('cmdOn', this)">Скопировать команду ВКЛЮЧЕНИЯ</button>
+        <button class="btn btn-on" onclick="copyCmd('cmdEnable', this)">СКОПИРОВАТЬ КОМАНДУ ВКЛЮЧЕНИЯ</button>
     </div>
 
     <script>
-        function copyText(elementId, btnElement) {
+        function copyCmd(elementId, btn) {
             const text = document.getElementById(elementId).innerText;
-            const tempInput = document.createElement("textarea");
-            tempInput.value = text;
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            document.execCommand("copy");
-            document.body.removeChild(tempInput);
-
-            const originalText = btnElement.innerText;
-            btnElement.innerText = "СКОПИРОВАНО! ВСТАВЬТЕ В POWERSHELL";
-            
-            setTimeout(() => {
-                btnElement.innerText = originalText;
-            }, 3000);
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = btn.innerText;
+                btn.innerText = "✅ СКОПИРОВАНО!";
+                setTimeout(() => btn.innerText = originalText, 2000);
+            }).catch(err => {
+                alert("Ошибка копирования. Выделите текст и скопируйте вручную.");
+            });
         }
     </script>
 
