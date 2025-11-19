@@ -7,113 +7,104 @@
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
-            background-color: #f0f2f5;
+            background-color: #e9ecef;
             color: #333;
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
         }
-        h1 {
-            text-align: center;
-            color: #2c3e50;
-        }
         .card {
             background: white;
-            padding: 20px;
-            margin-top: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        .warning {
-            background-color: #fff3cd;
-            border-left: 5px solid #ffc107;
-            padding: 15px;
+            padding: 25px;
             margin-bottom: 20px;
-            border-radius: 4px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        h2 {
-            margin-top: 0;
-            font-size: 18px;
+        .warning-box {
+            background-color: #fff3cd;
+            border: 2px solid #ffeeba;
+            color: #856404;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
         }
-        .off-header { color: #dc3545; }
-        .on-header { color: #28a745; }
+        h2 { margin-top: 0; }
         
-        .code-box {
-            display: flex;
-            background: #2d2d2d;
-            color: #f8f8f2;
-            border-radius: 6px;
-            overflow: hidden;
-            margin-top: 10px;
-            align-items: stretch;
+        .btn-group {
+            margin-top: 15px;
         }
-        .code-text {
+
+        .code-display {
+            background: #212529;
+            color: #f8f9fa;
             padding: 15px;
             font-family: 'Consolas', monospace;
-            font-size: 13px;
-            overflow-x: auto;
-            white-space: pre-wrap;
+            font-size: 0.85em;
+            border-radius: 5px;
             word-break: break-all;
-            flex-grow: 1;
-            border-right: 1px solid #555;
+            margin-bottom: 10px;
+            border-left: 5px solid #6c757d;
         }
-        .copy-btn {
-            border: none;
-            cursor: pointer;
-            padding: 0 20px;
+
+        .action-btn {
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
             font-weight: bold;
             color: white;
-            transition: 0.2s;
-            min-width: 120px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            text-transform: uppercase;
         }
-        .btn-off { background-color: #dc3545; }
-        .btn-off:hover { background-color: #c82333; }
         
-        .btn-on { background-color: #28a745; }
-        .btn-on:hover { background-color: #218838; }
+        .btn-off {
+            background-color: #dc3545; /* Красный */
+            box-shadow: 0 4px 0 #a71d2a;
+        }
+        .btn-off:active { box-shadow: none; transform: translateY(4px); }
 
-        ul { margin: 5px 0 15px 20px; padding: 0; color: #666; font-size: 0.9em; }
+        .btn-on {
+            background-color: #28a745; /* Зеленый */
+            box-shadow: 0 4px 0 #1e7e34;
+        }
+        .btn-on:active { box-shadow: none; transform: translateY(4px); }
+
     </style>
 </head>
 <body>
 
-    <h1>Панель администратора</h1>
-
-    <div class="warning">
-        <strong>Важно:</strong> Запускайте PowerShell от имени <strong>Администратора</strong>.
-        <br>Эти кнопки выполняют 3 действия сразу: Брандмауэр + Реальное время + Облако.
+    <div class="warning-box">
+        <h3>⚠️ ВАЖНО: Перед использованием</h3>
+        <p>Чтобы команды ниже сработали для <strong>Защиты в реальном времени</strong>, вы должны вручную отключить <strong>«Защиту от подделки»</strong> в настройках Безопасности Windows. Иначе Windows заблокирует выполнение команды.</p>
     </div>
 
     <div class="card">
-        <h2 class="off-header">⛔ ОТКЛЮЧИТЬ ВСЁ (Брандмауэр + Защита + Облако)</h2>
+        <h2>⛔ ОТКЛЮЧИТЬ ВСЁ (Брандмауэр + Антивирус + Облако)</h2>
+        <p>Эта кнопка копирует команду, которая отключает:</p>
         <ul>
-            <li>Отключает сетевой профиль (Firewall)</li>
-            <li>Отключает мониторинг в реальном времени (Defender)</li>
-            <li>Отключает отправку отчетов в облако (MAPS)</li>
+            <li>Все профили брандмауэра</li>
+            <li>Защиту в реальном времени</li>
+            <li>Облачную защиту и отправку образцов</li>
         </ul>
         
-        <div class="code-box">
-            <div id="cmdAllOff" class="code-text">Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False; Set-MpPreference -DisableRealtimeMonitoring $true; Set-MpPreference -MAPSReporting 0</div>
-            <button class="copy-btn btn-off" onclick="copyCode('cmdAllOff', this)">КОПИРОВАТЬ</button>
-        </div>
+        <div class="code-display" id="cmdOff">Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False; Set-MpPreference -DisableRealtimeMonitoring $true; Set-MpPreference -MAPSReporting 0</div>
+        
+        <button class="action-btn btn-off" onclick="copyText('cmdOff', this)">Скопировать команду ОТКЛЮЧЕНИЯ</button>
     </div>
 
     <div class="card">
-        <h2 class="on-header">✅ ВКЛЮЧИТЬ ВСЁ (Восстановление)</h2>
-        <ul>
-            <li>Включает сетевой профиль</li>
-            <li>Включает мониторинг в реальном времени</li>
-            <li>Включает облачную защиту</li>
-        </ul>
-
-        <div class="code-box">
-            <div id="cmdAllOn" class="code-text">Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled True; Set-MpPreference -DisableRealtimeMonitoring $false; Set-MpPreference -MAPSReporting 2</div>
-            <button class="copy-btn btn-on" onclick="copyCode('cmdAllOn', this)">КОПИРОВАТЬ</button>
-        </div>
+        <h2>✅ ВКЛЮЧИТЬ ВСЁ ОБРАТНО</h2>
+        <p>Восстанавливает все настройки безопасности в исходное состояние.</p>
+        
+        <div class="code-display" id="cmdOn">Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled True; Set-MpPreference -DisableRealtimeMonitoring $false; Set-MpPreference -MAPSReporting 2</div>
+        
+        <button class="action-btn btn-on" onclick="copyText('cmdOn', this)">Скопировать команду ВКЛЮЧЕНИЯ</button>
     </div>
 
     <script>
-        function copyCode(elementId, btn) {
+        function copyText(elementId, btnElement) {
             const text = document.getElementById(elementId).innerText;
             const tempInput = document.createElement("textarea");
             tempInput.value = text;
@@ -122,16 +113,12 @@
             document.execCommand("copy");
             document.body.removeChild(tempInput);
 
-            const originalText = btn.innerText;
-            const originalColor = btn.style.backgroundColor;
-
-            btn.innerText = "СКОПИРОВАНО";
-            btn.style.backgroundColor = "#0056b3";
-
+            const originalText = btnElement.innerText;
+            btnElement.innerText = "СКОПИРОВАНО! ВСТАВЬТЕ В POWERSHELL";
+            
             setTimeout(() => {
-                btn.innerText = originalText;
-                btn.style.backgroundColor = originalColor;
-            }, 2000);
+                btnElement.innerText = originalText;
+            }, 3000);
         }
     </script>
 
