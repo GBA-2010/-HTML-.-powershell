@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Инструкция: Отключение брандмауэра</title>
+    <title>Инструкция: Управление брандмауэром</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -18,6 +18,10 @@
             color: #2c3e50;
             border-bottom: 2px solid #2c3e50;
             padding-bottom: 10px;
+        }
+        h3 {
+            margin-top: 30px;
+            color: #2c3e50;
         }
         .warning {
             background-color: #fff3cd;
@@ -68,38 +72,50 @@
         .copy-btn:active {
             background-color: #3e8e41;
         }
+        hr {
+            margin: 40px 0;
+            border: 0;
+            border-top: 1px solid #ccc;
+        }
     </style>
 </head>
 <body>
 
-    <h1>Как отключить брандмауэр через PowerShell</h1>
+    <h1>Управление брандмауэром через PowerShell</h1>
 
     <div class="warning">
-        <strong>Внимание!</strong> Отключение брандмауэра делает ваш компьютер уязвимым. Используйте эту инструкцию только для диагностики и не забудьте включить защиту обратно.
-    </div>
-
-    <h3>Пошаговая инструкция:</h3>
-
-    <div class="step">
-        1. Нажмите <strong>Пуск</strong>, введите <em>PowerShell</em>, нажмите правой кнопкой мыши и выберите <strong>Запуск от имени администратора</strong>.
+        <strong>Внимание!</strong> Используйте эти команды с осторожностью.
     </div>
 
     <div class="step">
-        2. Скопируйте команду ниже, нажав на зеленую кнопку, и вставьте её в терминал (ПКМ или Ctrl+V), затем нажмите <strong>Enter</strong>.
+        <strong>Предварительный шаг:</strong> Нажмите <strong>Пуск</strong>, введите <em>PowerShell</em>, нажмите правой кнопкой мыши и выберите <strong>Запуск от имени администратора</strong>.
+    </div>
+
+    <h3>1. Отключение брандмауэра</h3>
+    <div class="step">
+        Команда ниже полностью отключает защиту для всех профилей сети.
     </div>
 
     <div class="code-container">
-        <div id="commandText" class="code-block">Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False</div>
-        <button onclick="copyToClipboard()" class="copy-btn" id="copyButton">Копировать</button>
+        <div id="cmdDisable" class="code-block">Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False</div>
+        <button onclick="copyToClipboard('cmdDisable', 'btnDisable')" class="copy-btn" id="btnDisable">Копировать</button>
     </div>
 
+    <hr>
+
+    <h3>2. Включение брандмауэра (Восстановление)</h3>
     <div class="step">
-        <p><em>Для включения защиты обратно используйте команду, заменив <b>False</b> на <b>True</b>.</em></p>
+        Команда ниже включает защиту обратно. <strong>Рекомендуется выполнить это сразу после завершения работ.</strong>
+    </div>
+
+    <div class="code-container">
+        <div id="cmdEnable" class="code-block">Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled True</div>
+        <button onclick="copyToClipboard('cmdEnable', 'btnEnable')" class="copy-btn" id="btnEnable">Копировать</button>
     </div>
 
     <script>
-        function copyToClipboard() {
-            const commandText = document.getElementById("commandText").innerText;
+        function copyToClipboard(elementId, buttonId) {
+            const commandText = document.getElementById(elementId).innerText;
             
             // Создаем временный элемент для копирования
             const tempInput = document.createElement("textarea");
@@ -109,9 +125,10 @@
             document.execCommand("copy");
             document.body.removeChild(tempInput);
 
-            // Визуальное подтверждение
-            const button = document.getElementById("copyButton");
+            // Визуальное подтверждение для конкретной кнопки
+            const button = document.getElementById(buttonId);
             const originalText = button.innerText;
+            
             button.innerText = "Скопировано!";
             button.style.backgroundColor = "#2196F3";
             
@@ -123,4 +140,4 @@
     </script>
 
 </body>
-</html>
+</html>-
