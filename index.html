@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Инструкция: Отключение брандмауэра</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #2c3e50;
+            padding-bottom: 10px;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+            color: #856404;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .step {
+            background: white;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .code-container {
+            position: relative;
+            margin: 15px 0;
+        }
+        .code-block {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            padding-right: 120px; /* Место для кнопки */
+            font-family: 'Consolas', 'Monaco', monospace;
+            overflow-x: auto;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 8px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        .copy-btn:hover {
+            background-color: #45a049;
+        }
+        .copy-btn:active {
+            background-color: #3e8e41;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Как отключить брандмауэр через PowerShell</h1>
+
+    <div class="warning">
+        <strong>Внимание!</strong> Отключение брандмауэра делает ваш компьютер уязвимым. Используйте эту инструкцию только для диагностики и не забудьте включить защиту обратно.
+    </div>
+
+    <h3>Пошаговая инструкция:</h3>
+
+    <div class="step">
+        1. Нажмите <strong>Пуск</strong>, введите <em>PowerShell</em>, нажмите правой кнопкой мыши и выберите <strong>Запуск от имени администратора</strong>.
+    </div>
+
+    <div class="step">
+        2. Скопируйте команду ниже, нажав на зеленую кнопку, и вставьте её в терминал (ПКМ или Ctrl+V), затем нажмите <strong>Enter</strong>.
+    </div>
+
+    <div class="code-container">
+        <div id="commandText" class="code-block">Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False</div>
+        <button onclick="copyToClipboard()" class="copy-btn" id="copyButton">Копировать</button>
+    </div>
+
+    <div class="step">
+        <p><em>Для включения защиты обратно используйте команду, заменив <b>False</b> на <b>True</b>.</em></p>
+    </div>
+
+    <script>
+        function copyToClipboard() {
+            const commandText = document.getElementById("commandText").innerText;
+            
+            // Создаем временный элемент для копирования
+            const tempInput = document.createElement("textarea");
+            tempInput.value = commandText;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+
+            // Визуальное подтверждение
+            const button = document.getElementById("copyButton");
+            const originalText = button.innerText;
+            button.innerText = "Скопировано!";
+            button.style.backgroundColor = "#2196F3";
+            
+            setTimeout(() => {
+                button.innerText = originalText;
+                button.style.backgroundColor = "#4CAF50";
+            }, 2000);
+        }
+    </script>
+
+</body>
+</html>
