@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Инструкция: Управление брандмауэром</title>
+    <title>Инструкция: Управление безопасностью Windows</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -19,9 +19,16 @@
             border-bottom: 2px solid #2c3e50;
             padding-bottom: 10px;
         }
-        h3 {
-            margin-top: 30px;
+        h2 {
             color: #2c3e50;
+            margin-top: 40px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+        }
+        h3 {
+            margin-top: 20px;
+            color: #444;
+            font-size: 1.1em;
         }
         .warning {
             background-color: #fff3cd;
@@ -72,45 +79,83 @@
         .copy-btn:active {
             background-color: #3e8e41;
         }
-        hr {
-            margin: 40px 0;
-            border: 0;
-            border-top: 1px solid #ccc;
+        .section-group {
+            margin-bottom: 50px;
         }
     </style>
 </head>
 <body>
 
-    <h1>Управление брандмауэром через PowerShell</h1>
+    <h1>Управление безопасностью через PowerShell</h1>
 
     <div class="warning">
-        <strong>Внимание!</strong> Используйте эти команды с осторожностью.
+        <strong>Внимание!</strong> Для работы этих команд PowerShell должен быть запущен <strong>от имени администратора</strong>. Изменения снижают безопасность системы.
     </div>
 
-    <div class="step">
-        <strong>Предварительный шаг:</strong> Нажмите <strong>Пуск</strong>, введите <em>PowerShell</em>, нажмите правой кнопкой мыши и выберите <strong>Запуск от имени администратора</strong>.
+    <div class="section-group">
+        <h2>1. Брандмауэр (Firewall)</h2>
+        
+        <h3>Отключение брандмауэра</h3>
+        <div class="step">
+            Полностью отключает сетевой экран для всех профилей (Частная, Публичная, Доменная).
+        </div>
+        <div class="code-container">
+            <div id="cmdFirewallOff" class="code-block">Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False</div>
+            <button onclick="copyToClipboard('cmdFirewallOff', 'btnFirewallOff')" class="copy-btn" id="btnFirewallOff">Копировать</button>
+        </div>
+
+        <h3>Включение брандмауэра</h3>
+        <div class="step">
+            Возвращает настройки брандмауэра в активное состояние.
+        </div>
+        <div class="code-container">
+            <div id="cmdFirewallOn" class="code-block">Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled True</div>
+            <button onclick="copyToClipboard('cmdFirewallOn', 'btnFirewallOn')" class="copy-btn" id="btnFirewallOn">Копировать</button>
+        </div>
     </div>
 
-    <h3>1. Отключение брандмауэра</h3>
-    <div class="step">
-        Команда ниже полностью отключает защиту для всех профилей сети.
+    <div class="section-group">
+        <h2>2. Защита в реальном времени</h2>
+        
+        <h3>Отключение защиты в реальном времени</h3>
+        <div class="step">
+            Отключает основной сканер вирусов Windows Defender.
+        </div>
+        <div class="code-container">
+            <div id="cmdRealTimeOff" class="code-block">Set-MpPreference -DisableRealtimeMonitoring $true</div>
+            <button onclick="copyToClipboard('cmdRealTimeOff', 'btnRealTimeOff')" class="copy-btn" id="btnRealTimeOff">Копировать</button>
+        </div>
+
+        <h3>Включение защиты в реальном времени</h3>
+        <div class="step">
+            Включает сканирование файлов обратно.
+        </div>
+        <div class="code-container">
+            <div id="cmdRealTimeOn" class="code-block">Set-MpPreference -DisableRealtimeMonitoring $false</div>
+            <button onclick="copyToClipboard('cmdRealTimeOn', 'btnRealTimeOn')" class="copy-btn" id="btnRealTimeOn">Копировать</button>
+        </div>
     </div>
 
-    <div class="code-container">
-        <div id="cmdDisable" class="code-block">Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False</div>
-        <button onclick="copyToClipboard('cmdDisable', 'btnDisable')" class="copy-btn" id="btnDisable">Копировать</button>
-    </div>
+    <div class="section-group">
+        <h2>3. Облачная защита</h2>
+        
+        <h3>Отключение облачной защиты</h3>
+        <div class="step">
+            Отключает отправку данных и получение сигнатур из облака Microsoft (MAPS).
+        </div>
+        <div class="code-container">
+            <div id="cmdCloudOff" class="code-block">Set-MpPreference -MAPSReporting 0</div>
+            <button onclick="copyToClipboard('cmdCloudOff', 'btnCloudOff')" class="copy-btn" id="btnCloudOff">Копировать</button>
+        </div>
 
-    <hr>
-
-    <h3>2. Включение брандмауэра (Восстановление)</h3>
-    <div class="step">
-        Команда ниже включает защиту обратно. <strong>Рекомендуется выполнить это сразу после завершения работ.</strong>
-    </div>
-
-    <div class="code-container">
-        <div id="cmdEnable" class="code-block">Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled True</div>
-        <button onclick="copyToClipboard('cmdEnable', 'btnEnable')" class="copy-btn" id="btnEnable">Копировать</button>
+        <h3>Включение облачной защиты</h3>
+        <div class="step">
+            Включает расширенную облачную защиту (MAPS Advanced).
+        </div>
+        <div class="code-container">
+            <div id="cmdCloudOn" class="code-block">Set-MpPreference -MAPSReporting 2</div>
+            <button onclick="copyToClipboard('cmdCloudOn', 'btnCloudOn')" class="copy-btn" id="btnCloudOn">Копировать</button>
+        </div>
     </div>
 
     <script>
@@ -140,4 +185,4 @@
     </script>
 
 </body>
-</html>-
+</html>
