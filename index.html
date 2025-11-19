@@ -3,179 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Панель управления безопасностью</title>
+    <title>Полное управление защитой</title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            max-width: 850px;
-            margin: 0 auto;
-            padding: 20px;
+            font-family: 'Segoe UI', sans-serif;
             background-color: #f0f2f5;
             color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
         }
         h1 {
-            color: #1a1a1a;
-            border-bottom: 3px solid #0078d4;
-            padding-bottom: 15px;
             text-align: center;
+            color: #2c3e50;
         }
-        h2 {
-            color: #0078d4;
-            margin-top: 0;
-            font-size: 1.4em;
-            border-bottom: 1px solid #e1e1e1;
-            padding-bottom: 10px;
+        .card {
+            background: white;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
         .warning {
-            background-color: #fff4ce;
-            border-left: 6px solid #ffd700;
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
             padding: 15px;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             border-radius: 4px;
         }
-        .section-card {
-            background: white;
-            padding: 25px;
-            margin-bottom: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        h2 {
+            margin-top: 0;
+            font-size: 18px;
         }
-        .control-group {
-            margin-bottom: 20px;
-        }
-        .label-title {
-            font-weight: bold;
-            display: block;
-            margin-bottom: 5px;
-            color: #444;
-        }
-        .code-wrapper {
-            position: relative;
+        .off-header { color: #dc3545; }
+        .on-header { color: #28a745; }
+        
+        .code-box {
             display: flex;
-            align-items: center;
-            background-color: #2b2b2b;
+            background: #2d2d2d;
+            color: #f8f8f2;
             border-radius: 6px;
             overflow: hidden;
-            margin-bottom: 15px;
+            margin-top: 10px;
+            align-items: stretch;
         }
         .code-text {
-            flex-grow: 1;
-            color: #f8f8f2;
-            font-family: 'Consolas', 'Monaco', monospace;
-            font-size: 0.9em;
             padding: 15px;
-            white-space: nowrap;
+            font-family: 'Consolas', monospace;
+            font-size: 13px;
             overflow-x: auto;
-            border-right: 1px solid #444;
+            white-space: pre-wrap;
+            word-break: break-all;
+            flex-grow: 1;
+            border-right: 1px solid #555;
         }
         .copy-btn {
-            background-color: #28a745;
-            color: white;
             border: none;
-            padding: 0 20px;
-            height: 100%;
             cursor: pointer;
+            padding: 0 20px;
             font-weight: bold;
-            transition: background-color 0.2s;
+            color: white;
+            transition: 0.2s;
             min-width: 120px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: absolute;
-            right: 0;
-            top: 0;
-            bottom: 0;
         }
-        .copy-btn:hover {
-            background-color: #218838;
-        }
-        .copy-btn:active {
-            background-color: #1e7e34;
-        }
-        /* Отступы для текста, чтобы он не заезжал под кнопку */
-        .code-text {
-            padding-right: 130px; 
-        }
-        .status-off { color: #dc3545; font-weight: bold; }
-        .status-on { color: #28a745; font-weight: bold; }
+        .btn-off { background-color: #dc3545; }
+        .btn-off:hover { background-color: #c82333; }
+        
+        .btn-on { background-color: #28a745; }
+        .btn-on:hover { background-color: #218838; }
+
+        ul { margin: 5px 0 15px 20px; padding: 0; color: #666; font-size: 0.9em; }
     </style>
 </head>
 <body>
 
-    <h1>Управление защитой Windows (PowerShell)</h1>
+    <h1>Панель администратора</h1>
 
     <div class="warning">
-        <strong>Важно:</strong> Запускайте PowerShell <em>от имени администратора</em>. 
-        Изменение этих настроек влияет на безопасность вашего компьютера.
+        <strong>Важно:</strong> Запускайте PowerShell от имени <strong>Администратора</strong>.
+        <br>Эти кнопки выполняют 3 действия сразу: Брандмауэр + Реальное время + Облако.
     </div>
 
-    <div class="section-card">
-        <h2>1. Брандмауэр (Firewall)</h2>
+    <div class="card">
+        <h2 class="off-header">⛔ ОТКЛЮЧИТЬ ВСЁ (Брандмауэр + Защита + Облако)</h2>
+        <ul>
+            <li>Отключает сетевой профиль (Firewall)</li>
+            <li>Отключает мониторинг в реальном времени (Defender)</li>
+            <li>Отключает отправку отчетов в облако (MAPS)</li>
+        </ul>
         
-        <div class="control-group">
-            <span class="label-title">🔴 Отключить брандмауэр (Все сети)</span>
-            <div class="code-wrapper">
-                <div id="codeFirewallOff" class="code-text">Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False</div>
-                <button onclick="copyCmd('codeFirewallOff', this)" class="copy-btn">Копировать</button>
-            </div>
-        </div>
-
-        <div class="control-group">
-            <span class="label-title">🟢 Включить брандмауэр (Восстановить)</span>
-            <div class="code-wrapper">
-                <div id="codeFirewallOn" class="code-text">Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled True</div>
-                <button onclick="copyCmd('codeFirewallOn', this)" class="copy-btn">Копировать</button>
-            </div>
+        <div class="code-box">
+            <div id="cmdAllOff" class="code-text">Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False; Set-MpPreference -DisableRealtimeMonitoring $true; Set-MpPreference -MAPSReporting 0</div>
+            <button class="copy-btn btn-off" onclick="copyCode('cmdAllOff', this)">КОПИРОВАТЬ</button>
         </div>
     </div>
 
-    <div class="section-card">
-        <h2>2. Защита в реальном времени</h2>
-        <p><em>Основной антивирусный сканер Windows Defender.</em></p>
+    <div class="card">
+        <h2 class="on-header">✅ ВКЛЮЧИТЬ ВСЁ (Восстановление)</h2>
+        <ul>
+            <li>Включает сетевой профиль</li>
+            <li>Включает мониторинг в реальном времени</li>
+            <li>Включает облачную защиту</li>
+        </ul>
 
-        <div class="control-group">
-            <span class="label-title">🔴 Отключить защиту в реальном времени</span>
-            <div class="code-wrapper">
-                <div id="codeRealTimeOff" class="code-text">Set-MpPreference -DisableRealtimeMonitoring $true</div>
-                <button onclick="copyCmd('codeRealTimeOff', this)" class="copy-btn">Копировать</button>
-            </div>
-        </div>
-
-        <div class="control-group">
-            <span class="label-title">🟢 Включить защиту в реальном времени</span>
-            <div class="code-wrapper">
-                <div id="codeRealTimeOn" class="code-text">Set-MpPreference -DisableRealtimeMonitoring $false</div>
-                <button onclick="copyCmd('codeRealTimeOn', this)" class="copy-btn">Копировать</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="section-card">
-        <h2>3. Облачная защита</h2>
-        <p><em>Отправка образцов и получение сигнатур из облака Microsoft (MAPS).</em></p>
-
-        <div class="control-group">
-            <span class="label-title">🔴 Отключить облачную защиту</span>
-            <div class="code-wrapper">
-                <div id="codeCloudOff" class="code-text">Set-MpPreference -MAPSReporting 0</div>
-                <button onclick="copyCmd('codeCloudOff', this)" class="copy-btn">Копировать</button>
-            </div>
-        </div>
-
-        <div class="control-group">
-            <span class="label-title">🟢 Включить облачную защиту</span>
-            <div class="code-wrapper">
-                <div id="codeCloudOn" class="code-text">Set-MpPreference -MAPSReporting 2</div>
-                <button onclick="copyCmd('codeCloudOn', this)" class="copy-btn">Копировать</button>
-            </div>
+        <div class="code-box">
+            <div id="cmdAllOn" class="code-text">Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled True; Set-MpPreference -DisableRealtimeMonitoring $false; Set-MpPreference -MAPSReporting 2</div>
+            <button class="copy-btn btn-on" onclick="copyCode('cmdAllOn', this)">КОПИРОВАТЬ</button>
         </div>
     </div>
 
     <script>
-        function copyCmd(elementId, btnElement) {
+        function copyCode(elementId, btn) {
             const text = document.getElementById(elementId).innerText;
-            
             const tempInput = document.createElement("textarea");
             tempInput.value = text;
             document.body.appendChild(tempInput);
@@ -183,14 +122,16 @@
             document.execCommand("copy");
             document.body.removeChild(tempInput);
 
-            const originalText = btnElement.innerText;
-            btnElement.innerText = "Готово!";
-            btnElement.style.backgroundColor = "#005a9e"; // Темно-синий для подтверждения
-            
+            const originalText = btn.innerText;
+            const originalColor = btn.style.backgroundColor;
+
+            btn.innerText = "СКОПИРОВАНО";
+            btn.style.backgroundColor = "#0056b3";
+
             setTimeout(() => {
-                btnElement.innerText = originalText;
-                btnElement.style.backgroundColor = "#28a745"; // Возврат к зеленому
-            }, 1500);
+                btn.innerText = originalText;
+                btn.style.backgroundColor = originalColor;
+            }, 2000);
         }
     </script>
 
