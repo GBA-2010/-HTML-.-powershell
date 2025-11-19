@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Управление брандмауэром</title>
+    <title>Инструкция: Отключение брандмауэра</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -11,126 +11,62 @@
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
-            background-color: #f4f4f9;
-            color: #333;
         }
         h1 {
             color: #2c3e50;
-            border-bottom: 2px solid #2c3e50;
-            padding-bottom: 10px;
-            text-align: center;
         }
         .warning {
             background-color: #fff3cd;
-            border-left: 5px solid #ffc107;
+            border: 1px solid #ffeeba;
             color: #856404;
             padding: 15px;
-            margin-bottom: 30px;
-            border-radius: 4px;
-        }
-        .card {
-            background: white;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        h3 {
-            margin-top: 0;
-            color: #444;
-        }
-        .code-container {
-            display: flex;
-            background-color: #2d2d2d;
-            color: #f8f8f2;
             border-radius: 5px;
-            overflow: hidden;
-            margin-top: 10px;
+            margin-bottom: 20px;
         }
-        .code-text {
+        .code-block {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
             padding: 15px;
-            font-family: 'Consolas', monospace;
-            flex-grow: 1;
+            font-family: 'Consolas', 'Monaco', monospace;
             overflow-x: auto;
-            white-space: pre-wrap;
-            word-break: break-all;
-            font-size: 14px;
+            border-radius: 5px;
         }
-        .copy-btn {
-            border: none;
-            padding: 0 20px;
-            cursor: pointer;
-            font-weight: bold;
-            color: white;
-            transition: background-color 0.2s;
-            min-width: 130px;
-        }
-        .btn-disable {
-            background-color: #d9534f; /* Красный */
-        }
-        .btn-disable:hover {
-            background-color: #c9302c;
-        }
-        .btn-enable {
-            background-color: #5cb85c; /* Зеленый */
-        }
-        .btn-enable:hover {
-            background-color: #449d44;
+        .step {
+            margin-bottom: 15px;
         }
     </style>
 </head>
 <body>
 
-    <h1>Управление брандмауэром (PowerShell)</h1>
+    <h1>Как отключить брандмауэр через PowerShell</h1>
 
     <div class="warning">
-        <strong>Внимание:</strong> Запускайте PowerShell от имени <strong>Администратора</strong>, иначе команды не сработают.
+        <strong>Внимание!</strong> Отключение брандмауэра делает ваш компьютер уязвимым для угроз из сети. Выполняйте эти действия только при необходимости и не забудьте включить защиту обратно.
     </div>
 
-    <div class="card">
-        <h3>🔴 Отключить брандмауэр</h3>
-        <p>Эта команда полностью отключает сетевую защиту.</p>
-        
-        <div class="code-container">
-            <div id="cmdDisable" class="code-text">Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False</div>
-            <button onclick="copyToClipboard('cmdDisable', this)" class="copy-btn btn-disable">Копировать</button>
-        </div>
+    <h3>Пошаговая инструкция:</h3>
+
+    <div class="step">
+        1. Нажмите кнопку <strong>Пуск</strong> и начните вводить слово <em>PowerShell</em>.
     </div>
 
-    <div class="card">
-        <h3>🟢 Включить брандмауэр</h3>
-        <p>Эта команда включает защиту обратно (рекомендуется).</p>
-        
-        <div class="code-container">
-            <div id="cmdEnable" class="code-text">Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled True</div>
-            <button onclick="copyToClipboard('cmdEnable', this)" class="copy-btn btn-enable">Копировать</button>
-        </div>
+    <div class="step">
+        2. Нажмите правой кнопкой мыши на приложение <strong>Windows PowerShell</strong> и выберите пункт <strong>Запуск от имени администратора</strong>.
     </div>
 
-    <script>
-        function copyToClipboard(elementId, btn) {
-            const text = document.getElementById(elementId).innerText;
-            
-            const tempInput = document.createElement("textarea");
-            tempInput.value = text;
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            document.execCommand("copy");
-            document.body.removeChild(tempInput);
+    <div class="step">
+        3. Скопируйте следующую команду целиком:
+    </div>
 
-            const originalText = btn.innerText;
-            btn.innerText = "Скопировано!";
-            
-            // Временное изменение цвета для подтверждения
-            const originalColor = btn.style.backgroundColor;
-            btn.style.backgroundColor = "#0275d8";
+    <div class="code-block">
+        Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False
+    </div>
 
-            setTimeout(() => {
-                btn.innerText = originalText;
-                btn.style.backgroundColor = originalColor;
-            }, 1500);
-        }
-    </script>
+    <div class="step">
+        4. Вставьте скопированную команду в окно терминала (обычно это делается нажатием правой кнопки мыши) и нажмите клавишу <strong>Enter</strong>.
+    </div>
+
+    <p>Если команда выполнена успешно, терминал просто перейдет на новую строку или отобразит подтверждение.</p>
 
 </body>
 </html>
