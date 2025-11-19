@@ -3,109 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Панель управления защитой</title>
+    <title>Управление брандмауэром</title>
     <style>
         body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: #f3f4f6;
-            color: #1f2937;
-            max-width: 700px;
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
             margin: 0 auto;
             padding: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #2c3e50;
+            padding-bottom: 10px;
+            text-align: center;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+            color: #856404;
+            padding: 15px;
+            margin-bottom: 30px;
+            border-radius: 4px;
         }
         .card {
             background: white;
             padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-        .critical-warning {
-            background-color: #fee2e2;
-            border-left: 6px solid #ef4444;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 6px;
-            color: #991b1b;
+        h3 {
+            margin-top: 0;
+            color: #444;
         }
-        h2 { margin-top: 0; font-size: 1.2em; }
-        .step-list { margin: 0; padding-left: 20px; }
-        .step-list li { margin-bottom: 5px; }
-        
-        .code-area {
-            background: #111827;
-            color: #10b981; /* Зеленый текст консоли */
+        .code-container {
+            display: flex;
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        .code-text {
             padding: 15px;
             font-family: 'Consolas', monospace;
-            border-radius: 6px;
-            font-size: 0.9em;
+            flex-grow: 1;
+            overflow-x: auto;
+            white-space: pre-wrap;
             word-break: break-all;
-            margin: 10px 0;
-            border: 1px solid #374151;
+            font-size: 14px;
         }
-
-        .btn {
-            width: 100%;
-            padding: 12px;
-            font-weight: bold;
+        .copy-btn {
             border: none;
-            border-radius: 6px;
+            padding: 0 20px;
             cursor: pointer;
-            font-size: 16px;
-            transition: transform 0.1s;
+            font-weight: bold;
+            color: white;
+            transition: background-color 0.2s;
+            min-width: 130px;
         }
-        .btn:active { transform: scale(0.98); }
-        
-        .btn-off { background-color: #ef4444; color: white; } /* Красная */
-        .btn-on { background-color: #10b981; color: white; }  /* Зеленая */
-
+        .btn-disable {
+            background-color: #d9534f; /* Красный */
+        }
+        .btn-disable:hover {
+            background-color: #c9302c;
+        }
+        .btn-enable {
+            background-color: #5cb85c; /* Зеленый */
+        }
+        .btn-enable:hover {
+            background-color: #449d44;
+        }
     </style>
 </head>
 <body>
 
-    <div class="critical-warning">
-        <h3>🛑 ПОЧЕМУ КОД МОЖЕТ НЕ РАБОТАТЬ?</h3>
-        <p>Windows блокирует отключение защиты через скрипты.</p>
-        <p><strong>Чтобы кнопки ниже сработали, вы должны:</strong></p>
-        <ol>
-            <li>Открыть настройки антивируса (там же, где Защита в реальном времени).</li>
-            <li>Пролистать вниз до пункта <strong>«Защита от подделки»</strong>.</li>
-            <li><strong>ВЫКЛЮЧИТЬ</strong> его вручную.</li>
-        </ol>
-        <p><em>Без этого шага команды ниже будут игнорироваться системой!</em></p>
+    <h1>Управление брандмауэром (PowerShell)</h1>
+
+    <div class="warning">
+        <strong>Внимание:</strong> Запускайте PowerShell от имени <strong>Администратора</strong>, иначе команды не сработают.
     </div>
 
     <div class="card">
-        <h2>🔴 ОТКЛЮЧИТЬ ВСЁ</h2>
-        <p>Отключает: Брандмауэр, Реальное время, Облако.</p>
+        <h3>🔴 Отключить брандмауэр</h3>
+        <p>Эта команда полностью отключает сетевую защиту.</p>
         
-        <div class="code-area" id="cmdDisable">Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False; Set-MpPreference -DisableRealtimeMonitoring $true; Set-MpPreference -MAPSReporting 0</div>
-        
-        <button class="btn btn-off" onclick="copyCmd('cmdDisable', this)">1. СКОПИРОВАТЬ КОМАНДУ</button>
-        <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
-            👉 После копирования: вставьте в черное окно PowerShell и нажмите <strong>Enter</strong>.
-        </p>
+        <div class="code-container">
+            <div id="cmdDisable" class="code-text">Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False</div>
+            <button onclick="copyToClipboard('cmdDisable', this)" class="copy-btn btn-disable">Копировать</button>
+        </div>
     </div>
 
     <div class="card">
-        <h2>🟢 ВКЛЮЧИТЬ ВСЁ ОБРАТНО</h2>
-        <p>Возвращает все настройки безопасности.</p>
+        <h3>🟢 Включить брандмауэр</h3>
+        <p>Эта команда включает защиту обратно (рекомендуется).</p>
         
-        <div class="code-area" id="cmdEnable">Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled True; Set-MpPreference -DisableRealtimeMonitoring $false; Set-MpPreference -MAPSReporting 2</div>
-        
-        <button class="btn btn-on" onclick="copyCmd('cmdEnable', this)">СКОПИРОВАТЬ КОМАНДУ ВКЛЮЧЕНИЯ</button>
+        <div class="code-container">
+            <div id="cmdEnable" class="code-text">Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled True</div>
+            <button onclick="copyToClipboard('cmdEnable', this)" class="copy-btn btn-enable">Копировать</button>
+        </div>
     </div>
 
     <script>
-        function copyCmd(elementId, btn) {
+        function copyToClipboard(elementId, btn) {
             const text = document.getElementById(elementId).innerText;
-            navigator.clipboard.writeText(text).then(() => {
-                const originalText = btn.innerText;
-                btn.innerText = "✅ СКОПИРОВАНО!";
-                setTimeout(() => btn.innerText = originalText, 2000);
-            }).catch(err => {
-                alert("Ошибка копирования. Выделите текст и скопируйте вручную.");
-            });
+            
+            const tempInput = document.createElement("textarea");
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+
+            const originalText = btn.innerText;
+            btn.innerText = "Скопировано!";
+            
+            // Временное изменение цвета для подтверждения
+            const originalColor = btn.style.backgroundColor;
+            btn.style.backgroundColor = "#0275d8";
+
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.style.backgroundColor = originalColor;
+            }, 1500);
         }
     </script>
 
