@@ -1,72 +1,162 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Инструкция: Отключение брандмауэра</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        h1 {
-            color: #2c3e50;
-        }
-        .warning {
-            background-color: #fff3cd;
-            border: 1px solid #ffeeba;
-            color: #856404;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-        .code-block {
-            background-color: #f8f9fa;
-            border: 1px solid #dee2e6;
-            padding: 15px;
-            font-family: 'Consolas', 'Monaco', monospace;
-            overflow-x: auto;
-            border-radius: 5px;
-        }
-        .step {
-            margin-bottom: 15px;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Инструкция: Управление защитой Windows</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .code-block {
+            position: relative;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            padding-right: 50px; /* Место для иконки */
+            font-family: 'Consolas', 'Monaco', monospace;
+            overflow-x: auto;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .step {
+            margin-bottom: 15px;
+        }
+        .copy-icon {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 1.2em;
+            color: #6c757d;
+            transition: color 0.2s;
+            user-select: none;
+        }
+        .copy-icon:hover {
+            color: #007bff;
+        }
+        .command-text {
+            display: block;
+            white-space: nowrap;
+        }
+    </style>
+    <script>
+        function copyCommand(element) {
+            const commandText = element.previousElementSibling.textContent.trim();
+            navigator.clipboard.writeText(commandText).then(() => {
+                // Опционально: изменить иконку или показать сообщение
+                const originalIcon = element.textContent;
+                element.textContent = '✅';
+                setTimeout(() => {
+                    element.textContent = originalIcon;
+                }, 1000);
+            }).catch(err => {
+                console.error('Ошибка при копировании: ', err);
+            });
+        }
+    </script>
 </head>
 <body>
 
-    <h1>Как отключить брандмауэр через PowerShell</h1>
+    <h1>Управление Защитником Windows и Брандмауэром через PowerShell</h1>
 
-    <div class="warning">
-        <strong>Внимание!</strong> Отключение брандмауэра делает ваш компьютер уязвимым для угроз из сети. Выполняйте эти действия только при необходимости и не забудьте включить защиту обратно.
-    </div>
+    <div class="warning">
+        <strong>Внимание!</strong> Отключение защиты делает ваш компьютер уязвимым. Выполняйте эти действия только при необходимости и всегда включайте защиту обратно после завершения работ. Все команды требуют запуска PowerShell <strong>от имени администратора</strong>.
+    </div>
 
-    <h3>Пошаговая инструкция:</h3>
+    <h3>Команды для Брандмауэра Windows:</h3>
 
-    <div class="step">
-        1. Нажмите кнопку <strong>Пуск</strong> и начните вводить слово <em>PowerShell</em>.
-    </div>
+    <div class="step">
+        <strong>1. Отключить брандмауэр (все профили):</strong>
+    </div>
+    <div class="code-block">
+        <span class="command-text">Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False</span>
+        <span class="copy-icon" onclick="copyCommand(this)" title="Копировать команду">📋</span>
+    </div>
 
-    <div class="step">
-        2. Нажмите правой кнопкой мыши на приложение <strong>Windows PowerShell</strong> и выберите пункт <strong>Запуск от имени администратора</strong>.
-    </div>
+    <div class="step">
+        <strong>2. Включить брандмауэр (все профили):</strong>
+    </div>
+    <div class="code-block">
+        <span class="command-text">Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled True</span>
+        <span class="copy-icon" onclick="copyCommand(this)" title="Копировать команду">📋</span>
+    </div>
+    
+    <hr>
 
-    <div class="step">
-        3. Скопируйте следующую команду целиком:
-    </div>
+    <h3>Команды для Защитника Windows:</h3>
 
-    <div class="code-block">
-        Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False
-    </div>
+    <div class="step">
+        <strong>3. Отключить Защиту в реальном времени:</strong>
+    </div>
+    <div class="code-block">
+        <span class="command-text">Set-MpPreference -DisableRealtimeMonitoring $true</span>
+        <span class="copy-icon" onclick="copyCommand(this)" title="Копировать команду">📋</span>
+    </div>
 
-    <div class="step">
-        4. Вставьте скопированную команду в окно терминала (обычно это делается нажатием правой кнопки мыши) и нажмите клавишу <strong>Enter</strong>.
-    </div>
+    <div class="step">
+        <strong>4. Включить Защиту в реальном времени:</strong>
+    </div>
+    <div class="code-block">
+        <span class="command-text">Set-MpPreference -DisableRealtimeMonitoring $false</span>
+        <span class="copy-icon" onclick="copyCommand(this)" title="Копировать команду">📋</span>
+    </div>
+    
+    <hr>
 
-    <p>Если команда выполнена успешно, терминал просто перейдет на новую строку или отобразит подтверждение.</p>
+    <div class="step">
+        <strong>5. Отключить Облачную защиту:</strong>
+    </div>
+    <div class="code-block">
+        <span class="command-text">Set-MpPreference -MAPSReporting Disabled</span>
+        <span class="copy-icon" onclick="copyCommand(this)" title="Копировать команду">📋</span>
+    </div>
+
+    <div class="step">
+        <strong>6. Включить Облачную защиту (отправка базовой информации):</strong>
+    </div>
+    <div class="code-block">
+        <span class="command-text">Set-MpPreference -MAPSReporting Basic</span>
+        <span class="copy-icon" onclick="copyCommand(this)" title="Копировать команду">📋</span>
+    </div>
+    
+    <hr>
+
+    <h3>Общая инструкция по выполнению:</h3>
+
+    <div class="step">
+        1. Нажмите кнопку <strong>Пуск</strong> и начните вводить слово <em>PowerShell</em>.
+    </div>
+
+    <div class="step">
+        2. Нажмите правой кнопкой мыши на приложение <strong>Windows PowerShell</strong> и выберите пункт <strong>Запуск от имени администратора</strong>.
+    </div>
+
+    <div class="step">
+        3. Нажмите на иконку копирования (📋) рядом с нужной командой.
+    </div>
+
+    <div class="step">
+        4. Вставьте скопированную команду в окно терминала (обычно это делается нажатием правой кнопки мыши) и нажмите клавишу <strong>Enter</strong>.
+    </div>
+
+    <p>Если команда выполнена успешно, терминал просто перейдет на новую строку или отобразит подтверждение.</p>
 
 </body>
 </html>
