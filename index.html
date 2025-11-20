@@ -1,162 +1,198 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Инструкция: Управление защитой Windows</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        h1 {
-            color: #2c3e50;
-        }
-        .warning {
-            background-color: #fff3cd;
-            border: 1px solid #ffeeba;
-            color: #856404;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-        .code-block {
-            position: relative;
-            background-color: #f8f9fa;
-            border: 1px solid #dee2e6;
-            padding: 15px;
-            padding-right: 50px; /* Место для иконки */
-            font-family: 'Consolas', 'Monaco', monospace;
-            overflow-x: auto;
-            border-radius: 5px;
-            margin-bottom: 10px;
-        }
-        .step {
-            margin-bottom: 15px;
-        }
-        .copy-icon {
-            position: absolute;
-            top: 50%;
-            right: 10px;
-            transform: translateY(-50%);
-            cursor: pointer;
-            font-size: 1.2em;
-            color: #6c757d;
-            transition: color 0.2s;
-            user-select: none;
-        }
-        .copy-icon:hover {
-            color: #007bff;
-        }
-        .command-text {
-            display: block;
-            white-space: nowrap;
-        }
-    </style>
-    <script>
-        function copyCommand(element) {
-            const commandText = element.previousElementSibling.textContent.trim();
-            navigator.clipboard.writeText(commandText).then(() => {
-                // Опционально: изменить иконку или показать сообщение
-                const originalIcon = element.textContent;
-                element.textContent = '✅';
-                setTimeout(() => {
-                    element.textContent = originalIcon;
-                }, 1000);
-            }).catch(err => {
-                console.error('Ошибка при копировании: ', err);
-            });
-        }
-    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панель управления безопасностью</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f2f5;
+            color: #333;
+        }
+        h1 {
+            color: #1a1a1a;
+            border-bottom: 3px solid #0078d4;
+            padding-bottom: 15px;
+            text-align: center;
+        }
+        h2 {
+            color: #0078d4;
+            margin-top: 0;
+            font-size: 1.4em;
+            border-bottom: 1px solid #e1e1e1;
+            padding-bottom: 10px;
+        }
+        .warning {
+            background-color: #fff4ce;
+            border-left: 6px solid #ffd700;
+            padding: 15px;
+            margin-bottom: 30px;
+            border-radius: 4px;
+        }
+        .section-card {
+            background: white;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .control-group {
+            margin-bottom: 20px;
+        }
+        .label-title {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+            color: #444;
+        }
+        .code-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background-color: #2b2b2b;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+        .code-text {
+            flex-grow: 1;
+            color: #f8f8f2;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9em;
+            padding: 15px;
+            white-space: nowrap;
+            overflow-x: auto;
+            border-right: 1px solid #444;
+        }
+        .copy-btn {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 0 20px;
+            height: 100%;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.2s;
+            min-width: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+        }
+        .copy-btn:hover {
+            background-color: #218838;
+        }
+        .copy-btn:active {
+            background-color: #1e7e34;
+        }
+        /* Отступы для текста, чтобы он не заезжал под кнопку */
+        .code-text {
+            padding-right: 130px; 
+        }
+        .status-off { color: #dc3545; font-weight: bold; }
+        .status-on { color: #28a745; font-weight: bold; }
+    </style>
 </head>
 <body>
 
-    <h1>Управление Защитником Windows и Брандмауэром через PowerShell</h1>
+    <h1>Управление защитой Windows (PowerShell)</h1>
 
-    <div class="warning">
-        <strong>Внимание!</strong> Отключение защиты делает ваш компьютер уязвимым. Выполняйте эти действия только при необходимости и всегда включайте защиту обратно после завершения работ. Все команды требуют запуска PowerShell <strong>от имени администратора</strong>.
-    </div>
+    <div class="warning">
+        <strong>Важно:</strong> Запускайте PowerShell <em>от имени администратора</em>. 
+        Изменение этих настроек влияет на безопасность вашего компьютера.
+    </div>
 
-    <h3>Команды для Брандмауэра Windows:</h3>
+    <div class="section-card">
+        <h2>1. Брандмауэр (Firewall)</h2>
+        
+        <div class="control-group">
+            <span class="label-title">🔴 Отключить брандмауэр (Все сети)</span>
+            <div class="code-wrapper">
+                <div id="codeFirewallOff" class="code-text">Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False</div>
+                <button onclick="copyCmd('codeFirewallOff', this)" class="copy-btn">Копировать</button>
+            </div>
+        </div>
 
-    <div class="step">
-        <strong>1. Отключить брандмауэр (все профили):</strong>
-    </div>
-    <div class="code-block">
-        <span class="command-text">Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False</span>
-        <span class="copy-icon" onclick="copyCommand(this)" title="Копировать команду">📋</span>
-    </div>
+        <div class="control-group">
+            <span class="label-title">🟢 Включить брандмауэр (Восстановить)</span>
+            <div class="code-wrapper">
+                <div id="codeFirewallOn" class="code-text">Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled True</div>
+                <button onclick="copyCmd('codeFirewallOn', this)" class="copy-btn">Копировать</button>
+            </div>
+        </div>
+    </div>
 
-    <div class="step">
-        <strong>2. Включить брандмауэр (все профили):</strong>
-    </div>
-    <div class="code-block">
-        <span class="command-text">Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled True</span>
-        <span class="copy-icon" onclick="copyCommand(this)" title="Копировать команду">📋</span>
-    </div>
-    
-    <hr>
+    <div class="section-card">
+        <h2>2. Защита в реальном времени</h2>
+        <p><em>Основной антивирусный сканер Windows Defender.</em></p>
 
-    <h3>Команды для Защитника Windows:</h3>
+        <div class="control-group">
+            <span class="label-title">🔴 Отключить защиту в реальном времени</span>
+            <div class="code-wrapper">
+                <div id="codeRealTimeOff" class="code-text">Set-MpPreference -DisableRealtimeMonitoring $true</div>
+                <button onclick="copyCmd('codeRealTimeOff', this)" class="copy-btn">Копировать</button>
+            </div>
+        </div>
 
-    <div class="step">
-        <strong>3. Отключить Защиту в реальном времени:</strong>
-    </div>
-    <div class="code-block">
-        <span class="command-text">Set-MpPreference -DisableRealtimeMonitoring $true</span>
-        <span class="copy-icon" onclick="copyCommand(this)" title="Копировать команду">📋</span>
-    </div>
+        <div class="control-group">
+            <span class="label-title">🟢 Включить защиту в реальном времени</span>
+            <div class="code-wrapper">
+                <div id="codeRealTimeOn" class="code-text">Set-MpPreference -DisableRealtimeMonitoring $false</div>
+                <button onclick="copyCmd('codeRealTimeOn', this)" class="copy-btn">Копировать</button>
+            </div>
+        </div>
+    </div>
 
-    <div class="step">
-        <strong>4. Включить Защиту в реальном времени:</strong>
-    </div>
-    <div class="code-block">
-        <span class="command-text">Set-MpPreference -DisableRealtimeMonitoring $false</span>
-        <span class="copy-icon" onclick="copyCommand(this)" title="Копировать команду">📋</span>
-    </div>
-    
-    <hr>
+    <div class="section-card">
+        <h2>3. Облачная защита</h2>
+        <p><em>Отправка образцов и получение сигнатур из облака Microsoft (MAPS).</em></p>
 
-    <div class="step">
-        <strong>5. Отключить Облачную защиту:</strong>
-    </div>
-    <div class="code-block">
-        <span class="command-text">Set-MpPreference -MAPSReporting Disabled</span>
-        <span class="copy-icon" onclick="copyCommand(this)" title="Копировать команду">📋</span>
-    </div>
+        <div class="control-group">
+            <span class="label-title">🔴 Отключить облачную защиту</span>
+            <div class="code-wrapper">
+                <div id="codeCloudOff" class="code-text">Set-MpPreference -MAPSReporting 0</div>
+                <button onclick="copyCmd('codeCloudOff', this)" class="copy-btn">Копировать</button>
+            </div>
+        </div>
 
-    <div class="step">
-        <strong>6. Включить Облачную защиту (отправка базовой информации):</strong>
-    </div>
-    <div class="code-block">
-        <span class="command-text">Set-MpPreference -MAPSReporting Basic</span>
-        <span class="copy-icon" onclick="copyCommand(this)" title="Копировать команду">📋</span>
-    </div>
-    
-    <hr>
+        <div class="control-group">
+            <span class="label-title">🟢 Включить облачную защиту</span>
+            <div class="code-wrapper">
+                <div id="codeCloudOn" class="code-text">Set-MpPreference -MAPSReporting 2</div>
+                <button onclick="copyCmd('codeCloudOn', this)" class="copy-btn">Копировать</button>
+            </div>
+        </div>
+    </div>
 
-    <h3>Общая инструкция по выполнению:</h3>
+    <script>
+        function copyCmd(elementId, btnElement) {
+            const text = document.getElementById(elementId).innerText;
+            
+            const tempInput = document.createElement("textarea");
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
 
-    <div class="step">
-        1. Нажмите кнопку <strong>Пуск</strong> и начните вводить слово <em>PowerShell</em>.
-    </div>
-
-    <div class="step">
-        2. Нажмите правой кнопкой мыши на приложение <strong>Windows PowerShell</strong> и выберите пункт <strong>Запуск от имени администратора</strong>.
-    </div>
-
-    <div class="step">
-        3. Нажмите на иконку копирования (📋) рядом с нужной командой.
-    </div>
-
-    <div class="step">
-        4. Вставьте скопированную команду в окно терминала (обычно это делается нажатием правой кнопки мыши) и нажмите клавишу <strong>Enter</strong>.
-    </div>
-
-    <p>Если команда выполнена успешно, терминал просто перейдет на новую строку или отобразит подтверждение.</p>
+            const originalText = btnElement.innerText;
+            btnElement.innerText = "Готово!";
+            btnElement.style.backgroundColor = "#005a9e"; // Темно-синий для подтверждения
+            
+            setTimeout(() => {
+                btnElement.innerText = originalText;
+                btnElement.style.backgroundColor = "#28a745"; // Возврат к зеленому
+            }, 1500);
+        }
+    </script>
 
 </body>
 </html>
