@@ -29,9 +29,6 @@
             margin-top: 25px;
             color: #444;
             font-size: 1.1em;
-            display: flex;
-            align-items: center;
-            gap: 10px;
         }
         .warning {
             background-color: #fff3cd;
@@ -52,58 +49,63 @@
         .code-container {
             position: relative;
             margin-bottom: 30px;
+            background-color: #1e1e1e;
+            border-radius: 6px;
+            border: 1px solid #333;
         }
         .code-block {
-            background-color: #1e1e1e;
             color: #d4d4d4;
-            padding: 15px;
-            padding-right: 60px; /* Место для иконки */
+            padding: 20px;
+            padding-right: 60px; /* Отступ справа для иконки */
             font-family: 'Consolas', 'Monaco', monospace;
-            border-radius: 6px;
             white-space: pre-wrap;
             word-break: break-all;
             font-size: 14px;
-            line-height: 1.4;
-            border: 1px solid #333;
+            line-height: 1.5;
+            min-height: 24px;
         }
+        /* Стили для кнопки-иконки */
         .copy-btn {
             position: absolute;
-            top: 5px;
-            right: 5px;
-            width: 40px;
-            height: 40px;
-            background-color: transparent;
-            color: #a0a0a0;
-            border: none;
+            top: 10px;
+            right: 10px;
+            width: 36px;
+            height: 36px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 4px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.2s ease;
+            color: #fff;
+            padding: 0;
         }
         .copy-btn:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-            color: #fff;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
         }
         .copy-btn:active {
-            transform: scale(0.95);
+            transform: translateY(1px);
         }
+        /* Зеленый цвет при успешном копировании */
         .copy-btn.success {
-            color: #4CAF50;
+            background-color: #28a745;
+            border-color: #28a745;
         }
         .section-group {
             margin-bottom: 40px;
         }
-        /* SVG иконки */
-        .icon {
+        /* SVG иконка */
+        .icon-svg {
             width: 20px;
             height: 20px;
+            fill: none;
             stroke: currentColor;
             stroke-width: 2;
             stroke-linecap: round;
             stroke-linejoin: round;
-            fill: none;
         }
     </style>
 </head>
@@ -115,18 +117,18 @@
         <strong>Внимание!</strong> Для работы этих команд PowerShell должен быть запущен <strong>от имени администратора</strong>.
     </div>
 
-    <!-- Новая секция с комбинированной командой -->
     <div class="section-group">
-        <h2>🚀 Быстрое отключение всего</h2>
+        <h2>🚀 Комбинированная команда</h2>
         
         <h3>Отключить защиту в реальном времени и облако</h3>
         <div class="step">
-            Единая команда для отключения сразу двух основных компонентов защиты.
+            Эта команда отключает сразу два параметра: мониторинг в реальном времени и отправку данных в облако Microsoft (MAPS).
         </div>
         <div class="code-container">
-            <div id="cmdAllOff" class="code-block">Set-MpPreference -DisableRealtimeMonitoring $true; Set-MpPreference -MAPSReporting 0</div>
-            <button onclick="copyToClipboard('cmdAllOff', this)" class="copy-btn" title="Копировать код">
-                <svg class="icon" viewBox="0 0 24 24">
+            <div id="cmdComboOff" class="code-block">Set-MpPreference -DisableRealtimeMonitoring $true; Set-MpPreference -MAPSReporting 0</div>
+            <!-- Кнопка только с иконкой -->
+            <button onclick="copyToClipboard('cmdComboOff', this)" class="copy-btn" title="Копировать">
+                <svg class="icon-svg" viewBox="0 0 24 24">
                     <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                     <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                 </svg>
@@ -138,13 +140,10 @@
         <h2>1. Брандмауэр (Firewall)</h2>
         
         <h3>Отключение брандмауэра</h3>
-        <div class="step">
-            Полностью отключает сетевой экран для всех профилей.
-        </div>
         <div class="code-container">
             <div id="cmdFirewallOff" class="code-block">Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False</div>
-            <button onclick="copyToClipboard('cmdFirewallOff', this)" class="copy-btn" title="Копировать код">
-                <svg class="icon" viewBox="0 0 24 24">
+            <button onclick="copyToClipboard('cmdFirewallOff', this)" class="copy-btn" title="Копировать">
+                <svg class="icon-svg" viewBox="0 0 24 24">
                     <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                     <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                 </svg>
@@ -154,8 +153,8 @@
         <h3>Включение брандмауэра</h3>
         <div class="code-container">
             <div id="cmdFirewallOn" class="code-block">Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled True</div>
-            <button onclick="copyToClipboard('cmdFirewallOn', this)" class="copy-btn" title="Копировать код">
-                <svg class="icon" viewBox="0 0 24 24">
+            <button onclick="copyToClipboard('cmdFirewallOn', this)" class="copy-btn" title="Копировать">
+                <svg class="icon-svg" viewBox="0 0 24 24">
                     <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                     <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                 </svg>
@@ -164,13 +163,13 @@
     </div>
 
     <div class="section-group">
-        <h2>2. Защита в реальном времени</h2>
+        <h2>2. Защита в реальном времени (отдельно)</h2>
         
         <h3>Отключение</h3>
         <div class="code-container">
             <div id="cmdRealTimeOff" class="code-block">Set-MpPreference -DisableRealtimeMonitoring $true</div>
-            <button onclick="copyToClipboard('cmdRealTimeOff', this)" class="copy-btn" title="Копировать код">
-                <svg class="icon" viewBox="0 0 24 24">
+            <button onclick="copyToClipboard('cmdRealTimeOff', this)" class="copy-btn" title="Копировать">
+                <svg class="icon-svg" viewBox="0 0 24 24">
                     <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                     <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                 </svg>
@@ -180,8 +179,8 @@
         <h3>Включение</h3>
         <div class="code-container">
             <div id="cmdRealTimeOn" class="code-block">Set-MpPreference -DisableRealtimeMonitoring $false</div>
-            <button onclick="copyToClipboard('cmdRealTimeOn', this)" class="copy-btn" title="Копировать код">
-                <svg class="icon" viewBox="0 0 24 24">
+            <button onclick="copyToClipboard('cmdRealTimeOn', this)" class="copy-btn" title="Копировать">
+                <svg class="icon-svg" viewBox="0 0 24 24">
                     <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                     <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                 </svg>
@@ -190,13 +189,13 @@
     </div>
 
     <div class="section-group">
-        <h2>3. Облачная защита</h2>
+        <h2>3. Облачная защита (отдельно)</h2>
         
         <h3>Отключение</h3>
         <div class="code-container">
             <div id="cmdCloudOff" class="code-block">Set-MpPreference -MAPSReporting 0</div>
-            <button onclick="copyToClipboard('cmdCloudOff', this)" class="copy-btn" title="Копировать код">
-                <svg class="icon" viewBox="0 0 24 24">
+            <button onclick="copyToClipboard('cmdCloudOff', this)" class="copy-btn" title="Копировать">
+                <svg class="icon-svg" viewBox="0 0 24 24">
                     <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                     <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                 </svg>
@@ -206,8 +205,8 @@
         <h3>Включение</h3>
         <div class="code-container">
             <div id="cmdCloudOn" class="code-block">Set-MpPreference -MAPSReporting 2</div>
-            <button onclick="copyToClipboard('cmdCloudOn', this)" class="copy-btn" title="Копировать код">
-                <svg class="icon" viewBox="0 0 24 24">
+            <button onclick="copyToClipboard('cmdCloudOn', this)" class="copy-btn" title="Копировать">
+                <svg class="icon-svg" viewBox="0 0 24 24">
                     <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                     <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                 </svg>
@@ -219,38 +218,47 @@
         function copyToClipboard(elementId, btnElement) {
             const commandText = document.getElementById(elementId).innerText;
             
-            // Копирование через Clipboard API (современный способ)
+            // Современный метод копирования
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(commandText).then(() => {
-                    showSuccess(btnElement);
+                    animateSuccess(btnElement);
+                }).catch(err => {
+                    console.error('Не удалось скопировать: ', err);
+                    fallbackCopy(commandText, btnElement);
                 });
             } else {
-                // Резервный способ
-                const tempInput = document.createElement("textarea");
-                tempInput.value = commandText;
-                document.body.appendChild(tempInput);
-                tempInput.select();
-                document.execCommand("copy");
-                document.body.removeChild(tempInput);
-                showSuccess(btnElement);
+                fallbackCopy(commandText, btnElement);
             }
         }
 
-        function showSuccess(btnElement) {
-            const originalIcon = btnElement.innerHTML;
+        // Резервный метод копирования (для старых браузеров)
+        function fallbackCopy(text, btnElement) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                animateSuccess(btnElement);
+            } catch (err) {
+                console.error('Ошибка копирования', err);
+            }
+            document.body.removeChild(textArea);
+        }
+
+        function animateSuccess(btnElement) {
+            const originalHTML = btnElement.innerHTML;
             
-            // Иконка галочки
-            const checkIcon = `
-                <svg class="icon" viewBox="0 0 24 24">
+            // Меняем иконку на галочку
+            btnElement.innerHTML = `
+                <svg class="icon-svg" viewBox="0 0 24 24">
                     <polyline points="20 6 9 17 4 12"></polyline>
                 </svg>
             `;
-
-            btnElement.innerHTML = checkIcon;
             btnElement.classList.add('success');
             
             setTimeout(() => {
-                btnElement.innerHTML = originalIcon;
+                btnElement.innerHTML = originalHTML;
                 btnElement.classList.remove('success');
             }, 2000);
         }
