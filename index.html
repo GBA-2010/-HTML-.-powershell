@@ -39,6 +39,15 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             border-radius: 0 5px 5px 0;
         }
+        .note {
+            background-color: #e8f4fd;
+            border-left: 5px solid #2196F3;
+            color: #0d47a1;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 0 5px 5px 0;
+            font-size: 0.9em;
+        }
         .step {
             background: white;
             padding: 15px;
@@ -116,17 +125,20 @@
     <div class="warning">
         <strong>Внимание!</strong> Для работы этих команд PowerShell должен быть запущен <strong>от имени администратора</strong>.
     </div>
+    
+    <div class="note">
+        <strong>Важно:</strong> Команды ниже используют редактирование реестра (GPO) для обхода автоматического включения защиты.
+    </div>
 
     <div class="section-group">
-        <h2>🚀 Комбинированная команда</h2>
+        <h2>🚀 Комбинированная команда (Усиленная)</h2>
         
-        <h3>Отключить защиту в реальном времени и облако</h3>
+        <h3>Отключить всё (через Реестр + PowerShell)</h3>
         <div class="step">
-            Эта команда отключает сразу два параметра: мониторинг в реальном времени и отправку данных в облако Microsoft (MAPS).
+            Эта команда одновременно отключает "мягкую" настройку и создает "жесткое" правило в реестре для блокировки защиты.
         </div>
         <div class="code-container">
-            <div id="cmdComboOff" class="code-block">Set-MpPreference -DisableRealtimeMonitoring $true; Set-MpPreference -MAPSReporting 0</div>
-            <!-- Кнопка только с иконкой -->
+            <div id="cmdComboOff" class="code-block">Set-MpPreference -DisableRealtimeMonitoring $true; New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender" -Name "Real-Time Protection" -Force; Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection" -Name "DisableRealtimeMonitoring" -Value 1 -Force</div>
             <button onclick="copyToClipboard('cmdComboOff', this)" class="copy-btn" title="Копировать">
                 <svg class="icon-svg" viewBox="0 0 24 24">
                     <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
@@ -163,11 +175,14 @@
     </div>
 
     <div class="section-group">
-        <h2>2. Защита в реальном времени (отдельно)</h2>
+        <h2>2. Защита в реальном времени</h2>
         
-        <h3>Отключение</h3>
+        <h3>Принудительное отключение (Реестр)</h3>
+        <div class="step">
+            Использует запись в системные политики, чтобы запретить включение защиты.
+        </div>
         <div class="code-container">
-            <div id="cmdRealTimeOff" class="code-block">Set-MpPreference -DisableRealtimeMonitoring $true</div>
+            <div id="cmdRealTimeOff" class="code-block">New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender" -Name "Real-Time Protection" -Force; Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection" -Name "DisableRealtimeMonitoring" -Value 1 -Force</div>
             <button onclick="copyToClipboard('cmdRealTimeOff', this)" class="copy-btn" title="Копировать">
                 <svg class="icon-svg" viewBox="0 0 24 24">
                     <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
@@ -176,9 +191,9 @@
             </button>
         </div>
 
-        <h3>Включение</h3>
+        <h3>Включение (Удаление политики)</h3>
         <div class="code-container">
-            <div id="cmdRealTimeOn" class="code-block">Set-MpPreference -DisableRealtimeMonitoring $false</div>
+            <div id="cmdRealTimeOn" class="code-block">Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection" -Name "DisableRealtimeMonitoring" -ErrorAction SilentlyContinue; Set-MpPreference -DisableRealtimeMonitoring $false</div>
             <button onclick="copyToClipboard('cmdRealTimeOn', this)" class="copy-btn" title="Копировать">
                 <svg class="icon-svg" viewBox="0 0 24 24">
                     <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
@@ -189,7 +204,7 @@
     </div>
 
     <div class="section-group">
-        <h2>3. Облачная защита (отдельно)</h2>
+        <h2>3. Облачная защита</h2>
         
         <h3>Отключение</h3>
         <div class="code-container">
