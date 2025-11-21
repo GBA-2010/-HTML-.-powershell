@@ -39,23 +39,6 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             border-radius: 0 5px 5px 0;
         }
-        .critical-warning {
-            background-color: #ffebee;
-            border-left: 5px solid #f44336;
-            color: #c62828;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 0 5px 5px 0;
-        }
-        .note {
-            background-color: #e8f4fd;
-            border-left: 5px solid #2196F3;
-            color: #0d47a1;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 0 5px 5px 0;
-            font-size: 0.9em;
-        }
         .step {
             background: white;
             padding: 15px;
@@ -133,19 +116,15 @@
     <div class="warning">
         <strong>Внимание!</strong> Для работы этих команд PowerShell должен быть запущен <strong>от имени администратора</strong>.
     </div>
-    
-    <div class="note">
-        <strong>Совет:</strong> Если команды ниже не срабатывают, скорее всего, их блокирует <strong>Защита от подделки</strong> (раздел 1).
-    </div>
 
+    <!-- Блок 1: Защита от подделки (новая функция) -->
     <div class="section-group">
         <h2>1. Защита от подделки (Tamper Protection)</h2>
         
-        <div class="critical-warning">
-            <strong>Важно:</strong> Это главная защита Windows. Она запрещает программам менять настройки безопасности. Если эта команда вернет ошибку или не сработает, отключите этот пункт <strong>вручную</strong> в меню «Безопасность Windows».
-        </div>
-
         <h3>Отключить защиту от подделки</h3>
+        <div class="step">
+            Отключает защиту, которая блокирует изменение настроек безопасности.
+        </div>
         <div class="code-container">
             <div id="cmdTamperOff" class="code-block">Set-MpPreference -DisableTamperProtection $true</div>
             <button onclick="copyToClipboard('cmdTamperOff', this)" class="copy-btn" title="Копировать">
@@ -168,8 +147,39 @@
         </div>
     </div>
 
+    <!-- Блок 2: Защита в реальном времени (стандартная команда без реестра) -->
     <div class="section-group">
-        <h2>2. Брандмауэр (Firewall)</h2>
+        <h2>2. Защита в реальном времени</h2>
+        
+        <h3>Отключить защиту в реальном времени</h3>
+        <div class="step">
+            Отключает основной антивирусный сканер.
+        </div>
+        <div class="code-container">
+            <div id="cmdRealTimeOff" class="code-block">Set-MpPreference -DisableRealtimeMonitoring $true</div>
+            <button onclick="copyToClipboard('cmdRealTimeOff', this)" class="copy-btn" title="Копировать">
+                <svg class="icon-svg" viewBox="0 0 24 24">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+            </button>
+        </div>
+
+        <h3>Включить защиту в реальном времени</h3>
+        <div class="code-container">
+            <div id="cmdRealTimeOn" class="code-block">Set-MpPreference -DisableRealtimeMonitoring $false</div>
+            <button onclick="copyToClipboard('cmdRealTimeOn', this)" class="copy-btn" title="Копировать">
+                <svg class="icon-svg" viewBox="0 0 24 24">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Блок 3: Брандмауэр -->
+    <div class="section-group">
+        <h2>3. Брандмауэр (Firewall)</h2>
         
         <h3>Отключение брандмауэра</h3>
         <div class="code-container">
@@ -194,36 +204,7 @@
         </div>
     </div>
 
-    <div class="section-group">
-        <h2>3. Защита в реальном времени</h2>
-        
-        <h3>Принудительное отключение (Реестр + PowerShell)</h3>
-        <div class="step">
-            Пытается отключить мониторинг и создать правило блокировки в реестре. 
-            <strong>Требует предварительного отключения "Защиты от подделки" (см. пункт 1).</strong>
-        </div>
-        <div class="code-container">
-            <div id="cmdRealTimeOff" class="code-block">Set-MpPreference -DisableRealtimeMonitoring $true; New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender" -Name "Real-Time Protection" -Force; Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection" -Name "DisableRealtimeMonitoring" -Value 1 -Force</div>
-            <button onclick="copyToClipboard('cmdRealTimeOff', this)" class="copy-btn" title="Копировать">
-                <svg class="icon-svg" viewBox="0 0 24 24">
-                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                </svg>
-            </button>
-        </div>
-
-        <h3>Включение (Удаление политики)</h3>
-        <div class="code-container">
-            <div id="cmdRealTimeOn" class="code-block">Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection" -Name "DisableRealtimeMonitoring" -ErrorAction SilentlyContinue; Set-MpPreference -DisableRealtimeMonitoring $false</div>
-            <button onclick="copyToClipboard('cmdRealTimeOn', this)" class="copy-btn" title="Копировать">
-                <svg class="icon-svg" viewBox="0 0 24 24">
-                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                </svg>
-            </button>
-        </div>
-    </div>
-
+    <!-- Блок 4: Облачная защита -->
     <div class="section-group">
         <h2>4. Облачная защита</h2>
         
