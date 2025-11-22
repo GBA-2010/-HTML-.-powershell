@@ -39,6 +39,15 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             border-radius: 0 5px 5px 0;
         }
+        .info {
+            background-color: #e3f2fd; 
+            border-left: 5px solid #2196f3; 
+            color: #0d47a1;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 0 5px 5px 0;
+        }
         .step {
             background: white;
             padding: 15px;
@@ -114,31 +123,24 @@
     <h1>Управление безопасностью через PowerShell</h1>
 
     <div class="warning">
-        <strong>Внимание!</strong> Для работы этих команд PowerShell должен быть запущен <strong>от имени администратора</strong>.
+        <strong>Внимание!</strong> Для работы команд PowerShell должен быть запущен <strong>от имени администратора</strong>.
     </div>
 
     <!-- Блок 1: Защита от подделки (Tamper Protection) -->
     <div class="section-group">
         <h2>1. Защита от подделки (Tamper Protection)</h2>
         
-        <h3>Отключить защиту от подделки</h3>
-        <div class="step">
-            Отключает защиту, которая блокирует изменение настроек безопасности. Это также приведет к отключению защиты в реальном времени.
-        </div>
-        <div class="code-container">
-            <div id="cmdTamperOff" class="code-block">Set-MpPreference -DisableTamperProtection $true</div>
-            <button onclick="copyToClipboard('cmdTamperOff', this)" class="copy-btn" title="Копировать">
-                <svg class="icon-svg" viewBox="0 0 24 24">
-                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                </svg>
-            </button>
+        <div class="info">
+            <strong>Важно:</strong> Windows блокирует отключение защиты от подделки через команды (ошибка 0x80004001). Это можно сделать только через меню настроек.
         </div>
 
-        <h3>Включить защиту от подделки</h3>
+        <h3>Открыть настройки для отключения</h3>
+        <div class="step">
+            Эта команда откроет окно «Защита от вирусов и угроз». Прокрутите вниз до раздела «Параметры защиты...», нажмите «Управление настройками» и отключите <strong>Защиту от подделки</strong> вручную.
+        </div>
         <div class="code-container">
-            <div id="cmdTamperOn" class="code-block">Set-MpPreference -DisableTamperProtection $false</div>
-            <button onclick="copyToClipboard('cmdTamperOn', this)" class="copy-btn" title="Копировать">
+            <div id="cmdOpenSettings" class="code-block">Start-Process windowsdefender://threatsettings</div>
+            <button onclick="copyToClipboard('cmdOpenSettings', this)" class="copy-btn" title="Копировать">
                 <svg class="icon-svg" viewBox="0 0 24 24">
                     <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                     <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
