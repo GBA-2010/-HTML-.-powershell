@@ -117,13 +117,13 @@
         <strong>Внимание!</strong> Для работы этих команд PowerShell должен быть запущен <strong>от имени администратора</strong>.
     </div>
 
-    <!-- Блок 1: Защита от подделки (новая функция) -->
+    <!-- Блок 1: Защита от подделки (Tamper Protection) -->
     <div class="section-group">
         <h2>1. Защита от подделки (Tamper Protection)</h2>
         
         <h3>Отключить защиту от подделки</h3>
         <div class="step">
-            Отключает защиту, которая блокирует изменение настроек безопасности.
+            Отключает защиту, которая блокирует изменение настроек безопасности. Это также приведет к отключению защиты в реальном времени.
         </div>
         <div class="code-container">
             <div id="cmdTamperOff" class="code-block">Set-MpPreference -DisableTamperProtection $true</div>
@@ -147,39 +147,9 @@
         </div>
     </div>
 
-    <!-- Блок 2: Защита в реальном времени (стандартная команда без реестра) -->
+    <!-- Блок 2: Брандмауэр -->
     <div class="section-group">
-        <h2>2. Защита в реальном времени</h2>
-        
-        <h3>Отключить защиту в реальном времени</h3>
-        <div class="step">
-            Отключает основной антивирусный сканер.
-        </div>
-        <div class="code-container">
-            <div id="cmdRealTimeOff" class="code-block">Set-MpPreference -DisableRealtimeMonitoring $true</div>
-            <button onclick="copyToClipboard('cmdRealTimeOff', this)" class="copy-btn" title="Копировать">
-                <svg class="icon-svg" viewBox="0 0 24 24">
-                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                </svg>
-            </button>
-        </div>
-
-        <h3>Включить защиту в реальном времени</h3>
-        <div class="code-container">
-            <div id="cmdRealTimeOn" class="code-block">Set-MpPreference -DisableRealtimeMonitoring $false</div>
-            <button onclick="copyToClipboard('cmdRealTimeOn', this)" class="copy-btn" title="Копировать">
-                <svg class="icon-svg" viewBox="0 0 24 24">
-                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                </svg>
-            </button>
-        </div>
-    </div>
-
-    <!-- Блок 3: Брандмауэр -->
-    <div class="section-group">
-        <h2>3. Брандмауэр (Firewall)</h2>
+        <h2>2. Брандмауэр (Firewall)</h2>
         
         <h3>Отключение брандмауэра</h3>
         <div class="code-container">
@@ -204,9 +174,9 @@
         </div>
     </div>
 
-    <!-- Блок 4: Облачная защита -->
+    <!-- Блок 3: Облачная защита -->
     <div class="section-group">
-        <h2>4. Облачная защита</h2>
+        <h2>3. Облачная защита</h2>
         
         <h3>Отключение</h3>
         <div class="code-container">
